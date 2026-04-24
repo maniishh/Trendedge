@@ -19,21 +19,10 @@ const app = express();
 
 // ── Security & logging ────────────────────────────────────────────────────────
 app.use(helmet({ contentSecurityPolicy: false }));
-const allowedOrigins = [
-  'http://localhost:5173',
-  'https://trendedge-1.vercel.app'
-];
-
 app.use(cors({
-  origin: function(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('CORS blocked'));
-    }
-  },
+  origin: process.env.CLIENT_URL,   // no fallback
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
 }));
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 
