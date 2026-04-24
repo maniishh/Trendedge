@@ -47,10 +47,6 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// ── Indexes ─────────────────────────────────────────────────────────────────
-userSchema.index({ email: 1 });
-userSchema.index({ username: 1 });
-
 // ── Virtual ──────────────────────────────────────────────────────────────────
 userSchema.virtual('fullName').get(function () {
   return `${this.firstName} ${this.lastName}`.trim() || this.username;
