@@ -1,9 +1,9 @@
-import axios from 'axios';
+import axios from "axios"
+const BASE_URL = import.meta.env.VITE_API_URL + '/api/v1';
 
-const api = axios.create({
-  baseURL:         '/api',
+export const api = axios.create({
+  baseURL: BASE_URL,
   withCredentials: true,
-  timeout:         15000,
 });
 
 // ── Request interceptor — attach access token ────────────────────────────────
