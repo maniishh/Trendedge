@@ -4,6 +4,30 @@ import { Activity, Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../components/Toast';
 
+function Field({ label, name, type = 'text', placeholder, icon: Icon, right, value, onChange, error, showPwd }) {
+  return (
+    <div>
+      <label style={{ fontSize: 12, fontWeight: 500, color: 'var(--text-secondary)', display: 'block', marginBottom: 6 }}>
+        {label}
+      </label>
+      <div style={{ position: 'relative' }}>
+        <Icon size={15} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+        <input
+          className={`input ${error ? 'input-error' : ''}`}
+          style={{ paddingLeft: 36, paddingRight: right ? 40 : undefined }}
+          type={name === 'password' || name === 'confirm' ? (showPwd ? 'text' : 'password') : type}
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
+          autoComplete={name === 'password' ? 'new-password' : name}
+        />
+        {right}
+      </div>
+      {error && <p style={{ color: 'var(--red)', fontSize: 11, marginTop: 4 }}>{error}</p>}
+    </div>
+  );
+}
+
 export default function Register() {
   const { register } = useAuth();
   const toast        = useToast();
@@ -47,28 +71,6 @@ export default function Register() {
     }
   };
 
-  const Field = ({ label, name, type = 'text', placeholder, icon: Icon, right }) => (
-    <div>
-      <label style={{ fontSize: 12, fontWeight: 500, color: 'var(--text-secondary)', display: 'block', marginBottom: 6 }}>
-        {label}
-      </label>
-      <div style={{ position: 'relative' }}>
-        <Icon size={15} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
-        <input
-          className={`input ${errors[name] ? 'input-error' : ''}`}
-          style={{ paddingLeft: 36, paddingRight: right ? 40 : undefined }}
-          type={name === 'password' || name === 'confirm' ? (showPwd ? 'text' : 'password') : type}
-          placeholder={placeholder}
-          value={form[name]}
-          onChange={set(name)}
-          autoComplete={name === 'password' ? 'new-password' : name}
-        />
-        {right}
-      </div>
-      {errors[name] && <p style={{ color: 'var(--red)', fontSize: 11, marginTop: 4 }}>{errors[name]}</p>}
-    </div>
-  );
-
   const togglePwd = (
     <button type="button" onClick={() => setShowPwd(v => !v)}
       style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', display: 'flex' }}>
@@ -100,10 +102,10 @@ export default function Register() {
           <h2 style={{ fontWeight: 700, fontSize: 18, marginBottom: 22 }}>Create account</h2>
 
           <form onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-            <Field label="Email"    name="email"    type="email"  placeholder="trader@example.com" icon={Mail} />
-            <Field label="Username" name="username" placeholder="e.g. johntrader"                 icon={User} />
-            <Field label="Password" name="password" placeholder="Min 8 chars, uppercase + digit"  icon={Lock} right={togglePwd} />
-            <Field label="Confirm password" name="confirm" placeholder="Repeat password"          icon={Lock} right={togglePwd} />
+            <Field label="Email"    name="email"    type="email"  placeholder="trader@example.com" icon={Mail} value={form.email}    onChange={set('email')}    error={errors.email}    showPwd={showPwd} />
+            <Field label="Username" name="username" placeholder="e.g. johntrader"                 icon={User} value={form.username} onChange={set('username')} error={errors.username} showPwd={showPwd} />
+            <Field label="Password" name="password" placeholder="Min 8 chars, uppercase + digit"  icon={Lock} value={form.password} onChange={set('password')} error={errors.password} showPwd={showPwd} right={togglePwd} />
+            <Field label="Confirm password" name="confirm" placeholder="Repeat password"          icon={Lock} value={form.confirm}  onChange={set('confirm')}  error={errors.confirm}  showPwd={showPwd} right={togglePwd} />
 
             <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: 6 }} disabled={loading}>
               {loading ? <><div className="spinner" style={{ width: 16, height: 16, borderWidth: 2 }} /> Creating…</> : 'Create Account'}
